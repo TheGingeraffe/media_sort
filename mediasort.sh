@@ -1,18 +1,22 @@
 #!/bin/bash
 # Sets and moves to the directory to be operated on.
 
-read -ep 'Path: ' POINTER;
+#read -ep 'Path: ' POINTER;
 
-if [[ $POINTER = /cydrive/f/n/* ]]; then 
-  cd $POINTER
-else 
-  echo "Not here you don't, only to be run from F:/n/" && exit 1
-fi
+#if [[ $POINTER = /cydrive/f/n/* ]]; then 
+#  cd $POINTER
+#else 
+#  echo "Not here you don't, only to be run from /cygdrive/f/n/sort/ not $POINTER" && exit 1
+#fi
+cd /cygdrive/f/n/sort && \
+echo "Changing to media_sort dir"
+
 
 # Changes whitespaces in filenames to underscores in preparation for the loop. 
 
-for f in $(find . -maxdepth 1 -type f); do
-  mv "$f" "${f// /_}" 2>/dev/null 
+find . -maxdepth 1 -type f \
+  | while read f; do 
+  mv "$f" "${f// /_}" 2>/dev/null
 done
 
 # Loop that iterates on a list of files at maxdepth 1 in $POINTER and moves them to the 
