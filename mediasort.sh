@@ -1,44 +1,44 @@
 #!/bin/bash
 # Sets and moves to the directory to be operated on.
 
-#read -ep 'Path: ' POINTER;
+read -ep 'Directory to sort: ' POINTER;
+read -ep "Are you sure you would like to sort $POINTER? (y/n): " CONFIRMATION;
 
-#if [[ $POINTER = /cydrive/f/n/* ]]; then 
-#  cd $POINTER
-#else 
-#  echo "Not here you don't, only to be run from /cygdrive/f/n/sort/ not $POINTER" && exit 1
-#fi
-cd /cygdrive/f/n/sort && \
-echo "Changing to media_sort dir"
-
+if [[ $CONFIRMATION = y ]]; then
+  cd $POINTER && \
+  echo "Moving to $POINTER"
+else
+  echo "Exiting.." && \
+  exit 1
+fi
 
 # Changes whitespaces in filenames to underscores in preparation for the loop. 
 
-find . -maxdepth 1 -type f \
+find $POINTER -maxdepth 1 -type f \
   | while read f; do 
-  mv "$f" "${f// /_}" 2>/dev/null
+  mv "$f" "${f// /_}"
 done
 
-# Loop that iterates on a list of files at maxdepth 1 in $POINTER and moves them to the 
+# Loop that iterates on a list of files found above and moves them to the 
 # appropriate directories
 
-for bleh in $(find . -maxdepth 1 -type f); do
-  nameoffile=$(echo $bleh | cut -f2 -d"/")
-  if [[ $(file $bleh | cut -f2 -d":" | cut -f2 -d" ") == *[NEP]G ]] && ! [[ -f /cygdrive/f/n/img/$nameoffile ]]; then
-    mv $bleh /cygdrive/f/n/img && \
-    echo "$nameoffile is an image, moving to /cygdrive/f/n/img"
-  elif [[ $(file $bleh | cut -f2 -d":" | cut -f2 -d" ") == GIF ]] && ! [[ -f /cygdrive/f/n/gif/$nameoffile ]]; then
-    mv $bleh /cygdrive/f/n/gif && \
-    echo "$nameoffile is a gif, moving to /cygdrive/f/n/gif"
-  elif [[ $(file $bleh | cut -f2 -d":" | cut -f2 -d" ") == ISO ]] && ! [[ -f /cygdrive/f/n/vid/$nameoffile ]]; then
-    mv $bleh /cygdrive/f/n/vid && \ 
-    echo "$nameoffile is a video, moving to /cygdrive/f/n/vid"
-  elif [[ $(file $bleh | cut -f2 -d":" | cut -f2 -d" ") == WebM ]] && ! [[ -f /cygdrive/f/n/vid/$nameoffile ]]; then
-    mv $bleh /cygdrive/f/n/vid && \
-    echo "$nameoffile is a video, moving to /cygdrive/f//n/vid"
-  elif [[ $(file $bleh | cut -f2 -d":" | cut -f2 -d" ") == HTML ]] && ! [[ -f /cygdrive/f/n/html/$nameoffile ]]; then
-    mv $bleh /cygdrive/f/n/html && \
-    echo "$nameoffile is an html file, moving to /cygdrive/n/html"
+for thing in $(find $POINTER -maxdepth 1 -type f); do
+  nameoffile=$(echo $thing | cut -f2 -d"/")
+  if [[ $(file $thing | cut -f2 -d":" | cut -f2 -d" ") == *[NEP]G ]] && ! [[ -f $POINTER/img/$nameoffile ]]; then
+    mv $thing $POINTER/img && \
+    echo "$nameoffile is an image, moving to $POINTER/img"
+  elif [[ $(file $thing | cut -f2 -d":" | cut -f2 -d" ") == GIF ]] && ! [[ -f $POINTER/gif/$nameoffile ]]; then
+    mv $thing $POINTER/gif && \
+    echo "$nameoffile is a gif, moving to $POINTER/gif"
+  elif [[ $(file $thing | cut -f2 -d":" | cut -f2 -d" ") == ISO ]] && ! [[ -f $POINTER/vid/$nameoffile ]]; then
+    mv $thing $POINTER/vid && \ 
+    echo "$nameoffile is a video, moving to $POINTER/vid"
+  elif [[ $(file $thing | cut -f2 -d":" | cut -f2 -d" ") == WebM ]] && ! [[ -f $POINTER/html/$nameoffile ]]; then
+    mv $thing $POINTER/vid && \
+    echo "$nameoffile is a video, moving to $POINTER/vid"
+  elif [[ $(file $thing | cut -f2 -d":" | cut -f2 -d" ") == HTML ]] && ! [[ -f $POINTER/$nameoffile ]]; then
+    mv $thing $POINTER/html && \
+    echo "$nameoffile is an html file, moving to $POINTER/html"
   else
     echo "There is either a file with the same name as $nameoffile in the destination, or I'm not sure of $nameoffile's file type"
   fi
